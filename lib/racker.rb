@@ -36,17 +36,23 @@ class Racker
         	response.redirect("/")
       end
     else
-    	@guesses.push(@request.params["guess"])
-    	@results.push("Invalid guess format, enter 4 numbers between 1 and 6")
-    	Rack::Response.new do |response|
-    		response.set_cookie("guesses", @guesses)
-    		response.set_cookie("results", @results)
-    		response.redirect("/")
+      unless @request.params["guess"] == "" 
+        @guesses.push(@request.params["guess"])
+      	@results.push("Invalid guess format, enter 4 numbers between 1 and 6")
+      	Rack::Response.new do |response|
+      		response.set_cookie("guesses", @guesses)
+      		response.set_cookie("results", @results)
+      		response.redirect("/")
+        end
+      else 
+        Rack::Response.new do |response|
+         response.redirect("/")
+        end
     	end
     end
   end
 
-	def hint
+  def hint
   	@request.cookies["hint"]
   end
 
