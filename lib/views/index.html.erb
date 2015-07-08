@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CodeBreaker</title>
+    <link rel="stylesheet" href="/stylesheets/application.css" type="text/css">
+  </head>
+  <body>
+
+<div id="container">
+  <h1>Welcome to Codebreaker Game</h1>
+    
+<div class="column">
+  <div class="column1">
+    
+      <%unless @game.saved_result%>
+        <% if @game.win %>
+          <div> You won! Congratulations! </div>
+        <% else %>
+          <% if @game.attempts_count == 0 %>
+            <div> You don`t have attempts.<br> Game over! 
+            </div>
+          <% else %>
+            <div class="guess">Enter your guess:</div>
+            <form class="guess1" method="post" action="/check_guess">
+             <input class="input" name="guess" type="text">
+             <input class="btn" type="submit" value="Submit">
+            </form>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <form class="new-game" method="post" action="/new_game">
+        <input class="btn" type="submit" value="New game">
+      </form>
+
+    <div class="table1">
+      <% if guesses && results %>
+        <table class="table-game">
+          <% guesses.each_with_index do |guess, i| %>
+            <tr>
+              <td>Guess:</td>
+              <td><%= guess %></td>
+              <td>Result:</td>
+              <td><%= results[i] %></td>
+            </tr>
+          <% end %>
+        </table>
+        <% end %>
+
+      <% if (@game.win || @game.attempts_count == 0) && !@game.saved_result %>
+        <form class="save" method="post" action="/save_result">
+          <input class="input" name="name" type="text">
+          <input class="btn" type="submit" value="Save result">
+        </form>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="column1">
+    <div class="attempt">Available attempts: <%= @game.attempts_count %>
+    </div>
+         
+      <% if hint && @game.attempts_count > 0 && !@game.saved_result && !@game.win %>
+        <form class="hint" method="get" action="/show_hint">
+          <input class="btn" type="submit" value="Hint">
+        </form>
+        <p class="hint-text"><%= hint %></p>
+      <% end %>
+  </div>
+</div>
+
+<div class="column">
+  <div class="introducing">
+    <h4 class="title">Introducing Codebreaker</h4>
+      <ul class="list">
+        <li>Codebreaker is a logic game in which a code-breaker tries to break a secret code created by a code-maker. The code-maker creates a secret code of four numbers between 1 and 6.</li>
+        <li>The code-breaker then gets some number of chances to break the code. In each turn, the code-breaker makes a guess of four numbers. The code-maker then marks the guess with up to four + and - signs.</li>
+        <li>A + indicates an exact match: one of the numbers in the guess is the same as one of the numbers in the secret code and in the same position.</li>
+        <li>A - indicates a number match: one of the numbers in the guess is the same as one of the numbers in the secret code but in a different position.</li>
+        </ul>
+  </div>
+
+  <div class="results">
+    <% if load_score.any? %>
+      <h3>Results</h3>
+      <table>
+        <tr>
+          <th>Item No</th>
+            <th>Name</th>
+            <th>Turns</th>
+            <th>Date</th>
+        </tr>
+        <% load_score.each_with_index do |row, i| %>
+          <tr>
+              <td><%= i+1 %></td>
+              <td><%= row[0] %></td>
+              <td><%= row[1] %></td>
+              <td><%= row[2] %></td>
+          </tr>
+        <% end %>
+      </table>
+    <%end%>
+  </div>
+</div> 
+</div>
+
+  </body>
+</html>
